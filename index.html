@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>electron_IPC_communication_error</title>
+</head>
+<body>
+<div>
+    <p>invoke promise resolve</p>
+    <button id="btn_invoke_promise_resolve_not_has_msg">invoke promise resolve not has msg (success✅)</button>
+    <button id="btn_invoke_promise_resolve_has_msg">invoke promise resolve has msg (success✅)</button>
+</div>
+
+<div>
+    <p>invoke promise reject</p>
+    <button id="btn_invoke_promise_reject_not_has_msg">invoke promise reject not has msg (error in main process ❌)
+    </button>
+    <button id="btn_invoke_promise_reject_has_msg">invoke promise reject has msg  (success✅)</button>
+</div>
+
+</body>
+</html>
+
+<script>
+    // invoke promise resolve
+    document.getElementById('btn_invoke_promise_resolve_not_has_msg').addEventListener('click', async function () {
+        await window.electron.handle_invoke_promise_resolve_not_has_msg();
+        console.log("btn_invoke_promise_resolve_not_has_msg success!");
+    })
+
+    document.getElementById('btn_invoke_promise_resolve_has_msg').addEventListener('click', async function () {
+        const msg = await window.electron.btn_invoke_promise_resolve_has_msg();
+        console.log("btn_invoke_promise_resolve_has_msg success!", msg);
+    })
+
+    // invoke promise reject
+    document.getElementById('btn_invoke_promise_reject_not_has_msg').addEventListener('click', async function () {
+        try {
+            await window.electron.handle_invoke_promise_reject_not_has_msg();
+        } catch (e) {
+            console.log("btn_invoke_promise_reject_not_has_msg error!", e);
+
+            // error in main process ❌
+
+            /*
+            Error occurred in handler for 'handle_invoke_promise_reject_not_has_msg': undefined
+            (node:48247) UnhandledPromiseRejectionWarning: TypeError: Cannot read properties of undefined (reading 'toString')
+            at replyWithError (node:electron/js2c/browser_init:2:86546)
+            at WebContents.<anonymous> (node:electron/js2c/browser_init:2:86790)
+            (Use `Electron --trace-warnings ...` to show where the warning was created)
+            (node:48247) UnhandledPromiseRejectionWarning: Unhandled promise rejection.
+            This error originated either by throwing inside of an async function without a catch block,
+            or by rejecting a promise which was not handled with .catch().
+            To terminate the node process on unhandled promise rejection,
+            use the CLI flag `--unhandled-rejections=strict`
+            (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 1)
+             */
+
+        }
+    })
+
+    document.getElementById('btn_invoke_promise_reject_has_msg').addEventListener('click', async function () {
+        try {
+            await window.electron.btn_invoke_promise_reject_has_msg();
+        } catch (e) {
+            console.log("btn_invoke_promise_reject_has_msg error!", e);
+        }
+    })
+
+</script>
